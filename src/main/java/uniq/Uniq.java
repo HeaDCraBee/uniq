@@ -58,13 +58,13 @@ public class Uniq {
             for (String s : uniqueStrings(strings, numbers))
                 writer.write(s + "\n");
 
-        } else for (int i = 0; i < strings.size(); i++ ) {
+        } else for (int i = 0; i < strings.size(); i++) {
             if (replaced) {
                 replacedStrings();
                 writer.write(numbers.get(i) + strings.get(i) + "\n");
 
             } else {
-                    writer.write(strings.get(i) + "\n");
+                writer.write(strings.get(i) + "\n");
             }
         }
 

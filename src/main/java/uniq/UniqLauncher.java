@@ -54,7 +54,7 @@ public class UniqLauncher {
             return;
         }
         try {
-            Uniq res = new Uniq (ignore, unique, replaced, num, outputName);
+            Uniq res = new Uniq(ignore, unique, replaced, num, outputName);
             res.stringList(inputName);
         } catch (IOException e) {
             e.printStackTrace();
