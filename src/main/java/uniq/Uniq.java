@@ -37,7 +37,6 @@ public class Uniq {
             br = new BufferedReader(new FileReader(inputName));
 
         try {
-
             String str;
             while ((str = br.readLine()) != null) {
                 stringList.add(str);
@@ -51,7 +50,6 @@ public class Uniq {
                 new BufferedWriter(new OutputStreamWriter(System.out));
         stringsMap(stringList);
 
-
         if (unique) {
             uniqueStrings(strings, numbers);
 
@@ -59,15 +57,15 @@ public class Uniq {
                 writer.write(s + "\n");
 
         } else for (int i = 0; i < strings.size(); i++) {
+
             if (replaced) {
                 replacedStrings();
                 writer.write(numbers.get(i) + strings.get(i) + "\n");
 
-            } else {
+            } else
                 writer.write(strings.get(i) + "\n");
-            }
-        }
 
+        }
 
         writer.close();
     }
@@ -95,10 +93,12 @@ public class Uniq {
 
     //-i & -s
     private int ignoreCase(String str1, String str2) {
-        if (num != 0) {
-            str1 = str1.substring(num);
-            str2 = str2.substring(num);
+
+        if (num > 0) {
+            str1 = str1.length() < num ? "" : str1.substring(num);
+            str2 = str2.length() < num ? "" : str2.substring(num);
         }
+
         if (ignore)
             return str1.compareToIgnoreCase(str2);
         else
@@ -108,31 +108,37 @@ public class Uniq {
 
     //-r
     private void replacedStrings() {
-        for (String i : numbers) {
+        for (String i : numbers)
+
             if (i.equals("1 "))
                 numbers.set(numbers.indexOf(i), "");
-        }
     }
 
     //-u
     private ArrayList<String> uniqueStrings(ArrayList<String> str, ArrayList<String> n) {
         ArrayList<String> uniq = new ArrayList<>();
+
         for (int i = 0; i < n.size(); i++) {
+
             if (n.get(i).equals("1 ") && equals(str, str.get(i)) < 2) {
                 uniq.add(str.get(i));
+
             }
+
         }
+
         return uniq;
     }
 
     //Проверяет, входит ли строка больше одного раза НЕ подряд
     private int equals(ArrayList<String> strList, String str) {
         int p = 0;
-        for (String s : strList) {
-            if (s.equals(str)) {
+
+        for (String s : strList)
+
+            if (s.equals(str))
                 p++;
-            }
-        }
+
         return p;
     }
 }

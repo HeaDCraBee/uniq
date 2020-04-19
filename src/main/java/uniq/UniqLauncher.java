@@ -39,20 +39,23 @@ public class UniqLauncher {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
-
             if (unique && replaced) {
                 System.err.println("You can't use -u and -r together");
                 return;
             }
 
-            parser.parseArgument(args);
+            if (num < 0) {
+                System.err.println("You can't slight negative number of symbols");
+            }
 
+            parser.parseArgument(args);
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("java -jar uniq.jar -i -u -c -s num -o ofile file");
             parser.printUsage(System.err);
             return;
         }
+
         try {
             Uniq res = new Uniq(ignore, unique, replaced, num, outputName);
             res.stringList(inputName);
@@ -60,5 +63,4 @@ public class UniqLauncher {
             e.printStackTrace();
         }
     }
-
 }
