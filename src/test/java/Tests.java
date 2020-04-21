@@ -1,13 +1,26 @@
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import uniq.Uniq;
 import uniq.UniqLauncher;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
 public class Tests {
+
+    private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+    @Before
+    public void setUpStreams() {
+        System.setErr(new PrintStream(output));
+    }
 
 
     private boolean outputFile(String output) throws IOException {
@@ -45,12 +58,14 @@ public class Tests {
     public void testErrUR() throws IOException {
         String[] args = {"-u", "-r", "-o", "src/test/resources/outputErr.txt", "src/test/resources/testErr.txt"};
         UniqLauncher.main(args);
+        assertEquals("You can't use -u and -r together",output.toString());
     }
 
     @Test
     public void testErrNegativeS() throws IOException {
         String[] args = {"-s", "-3", "-o", "src/test/resources/outputErr.txt", "src/test/resources/testErr.txt"};
         UniqLauncher.main(args);
+        assertEquals("You can't slight negative number of symbols\n",output.toString());
     }
 
     @Test
@@ -83,5 +98,10 @@ public class Tests {
         String output = "src/test/resources/outputNothing.txt";
         UniqLauncher.main(args);
         assertTrue(outputFile(output));
+    }
+
+    @After
+    public void cleanUpStrams() {
+        System.setOut(null);
     }
 }
