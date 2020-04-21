@@ -58,14 +58,14 @@ public class Tests {
     public void testErrUR() throws IOException {
         String[] args = {"-u", "-r", "-o", "src/test/resources/outputErr.txt", "src/test/resources/testErr.txt"};
         UniqLauncher.main(args);
-        assertEquals("You can't use -u and -r together",output.toString());
+        assertEquals("You can't use -u and -r together" + System.lineSeparator(),output.toString());
     }
 
     @Test
     public void testErrNegativeS() throws IOException {
         String[] args = {"-s", "-3", "-o", "src/test/resources/outputErr.txt", "src/test/resources/testErr.txt"};
         UniqLauncher.main(args);
-        assertEquals("You can't slight negative number of symbols\n",output.toString());
+        assertEquals("You can't slight negative number of symbols" + System.lineSeparator(),output.toString());
     }
 
     @Test
