@@ -5,9 +5,7 @@ import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,6 +38,9 @@ public class UniqLauncher {
 
     }
 
+    ArrayList<String> strings = new ArrayList<>();
+    ArrayList<Integer> numbers = new ArrayList<>();
+
     private void launch(String[] args) throws IOException {
         CmdLineParser parser = new CmdLineParser(this);
 
@@ -66,9 +67,7 @@ public class UniqLauncher {
             return;
         }
 
-
         ArrayList<String> inputStrings = new ArrayList<>();
-
         BufferedReader br = inputName != null ? Files.newBufferedReader(inputName) :
                 new BufferedReader(new InputStreamReader(System.in));
 
@@ -77,14 +76,39 @@ public class UniqLauncher {
             String str;
 
             while ((str = br.readLine()) != null) {
+
                 inputStrings.add(str);
+
             }
 
-            Uniq res = new Uniq(ignore, unique, replaced, num, outputName, inputStrings);
-            res.output();
+            Uniq res = new Uniq(ignore, unique, replaced, num, inputStrings, strings, numbers);
+            res.ret();
+            output();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private void output() throws IOException {
+
+        BufferedWriter writer = outputName != null ? Files.newBufferedWriter(outputName) :
+                new BufferedWriter(new OutputStreamWriter(System.out));
+
+        if (strings.size() == 0)
+            writer.write("");
+        else for (int i = 0; i < strings.size(); i++) {
+            if (replaced) {
+                if (numbers.get(i) == 1)
+                    writer.write(strings.get(i));
+                else
+                    writer.write(numbers.get(i) + " " + strings.get(i));
+            } else
+                writer.write(strings.get(i));
+            writer.newLine();
+
+        }
+        writer.close();
+    }
 }
+

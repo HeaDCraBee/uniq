@@ -1,10 +1,7 @@
 package uniq;
 
 
-import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -14,74 +11,44 @@ public class Uniq {
     boolean unique;
     boolean replaced;
     int num;
-    Path outputName;
     ArrayList<String> inputStrings;
-    ArrayList<String> strings = new ArrayList<>();
-    ArrayList<Integer> numbers = new ArrayList<>();
+    ArrayList<String> strings;
+    ArrayList<Integer> numbers;
 
 
-    public Uniq(Boolean ignore, Boolean unique, Boolean replaced, Integer num, Path outputName, ArrayList<String> inputStrings) {
+    public Uniq(Boolean ignore, Boolean unique, Boolean replaced, Integer num,
+                ArrayList<String> inputStrings, ArrayList<String> strings, ArrayList<Integer> numbers) {
         this.ignore = ignore;
         this.unique = unique;
         this.replaced = replaced;
         this.num = num;
-        this.outputName = outputName;
         this.inputStrings = inputStrings;
+        this.strings = strings;
+        this.numbers = numbers;
     }
 
-    public void output() throws IOException {
-        BufferedWriter writer = outputName != null ? Files.newBufferedWriter(outputName) :
-                new BufferedWriter(new OutputStreamWriter(System.out));
-
-        if (inputStrings.size() == 0)
-            writer.write("");
-        else {
-
-            stringsList(inputStrings);
-            if (unique) {
-
-                for (String s : uniqueStrings())
-                    writer.write(s);
-                writer.newLine();
-
-            }
-
-            for (int i = 0; i < strings.size(); i++) {
-
-                if (replaced) {
-                    if (numbers.get(i) == 1)
-                        writer.write(strings.get(i));
-                    else
-                        writer.write(numbers.get(i) + " " + strings.get(i));
-                } else
-                    writer.write(strings.get(i));
-
-                writer.newLine();
-
-            }
-
-        }
-
-        writer.close();
+    public void ret(){
+        if (inputStrings.size() != 0)
+        stringsList();
     }
 
     //Список строк и кол-ва их повторений подряд
-    private void stringsList(ArrayList<String> str) {
-        strings.add(str.get(0));
+    private void stringsList() {
+        strings.add(inputStrings.get(0));
+
         numbers.add(1);
+
         int k = 0;
         int num = 1;
 
-        for (int i = 0; i < str.size() - 1; i++) {
-
-            if (ignoreCase(str.get(i), str.get(i + 1)) == 0) {
-
+        for (int i = 0; i < inputStrings.size() - 1; i++) {
+            if (ignoreCase(inputStrings.get(i), inputStrings.get(i + 1)) == 0) {
                 num++;
                 numbers.set(k, num);
 
             } else {
 
-                strings.add(str.get(i + 1));
+                strings.add(inputStrings.get(i + 1));
                 num = 1;
                 numbers.add(1);
                 k++;
@@ -94,10 +61,9 @@ public class Uniq {
     //-i & -s
     private int ignoreCase(String str1, String str2) {
         if (num > 0) {
+            str1 = str1.length() <= num ? "" : str1.substring(num);
 
-            str1 = str1.length() < num ? "" : str1.substring(num);
-            str2 = str2.length() < num ? "" : str2.substring(num);
-
+            str2 = str2.length() <= num ? "" : str2.substring(num);
         }
 
         if (ignore)
