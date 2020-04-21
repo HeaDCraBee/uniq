@@ -3,6 +3,7 @@ package uniq;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -13,57 +14,51 @@ public class Uniq {
     boolean unique;
     boolean replaced;
     int num;
-    String outputName;
+    Path outputName;
+    ArrayList<String> inputStrings;
     ArrayList<String> strings = new ArrayList<>();
-    ArrayList<String> numbers = new ArrayList<>();
+    ArrayList<Integer> numbers = new ArrayList<>();
 
 
-    public Uniq(Boolean ignore, Boolean unique, Boolean replaced, Integer num, String outputName) {
+    public Uniq(Boolean ignore, Boolean unique, Boolean replaced, Integer num, Path outputName, ArrayList<String> inputStrings) {
         this.ignore = ignore;
         this.unique = unique;
         this.replaced = replaced;
         this.num = num;
         this.outputName = outputName;
+        this.inputStrings = inputStrings;
     }
 
-    public void stringList(String inputName) throws IOException {
-        BufferedReader br;
-        ArrayList<String> stringList = new ArrayList<>();
+    public void output() throws IOException {
+        BufferedWriter writer = outputName != null ? Files.newBufferedWriter(outputName) :
+                new BufferedWriter(new OutputStreamWriter(System.out));
 
-        if (inputName == null) {
-            System.out.println("Введите строки");
-            br = new BufferedReader(new InputStreamReader(System.in));
-        } else
-            br = new BufferedReader(new FileReader(inputName));
+        if (inputStrings.size() == 0)
+            writer.write("");
+        else {
 
-        try {
-            String str;
-            while ((str = br.readLine()) != null) {
-                stringList.add(str);
+            stringsList(inputStrings);
+            if (unique) {
+
+                for (String s : uniqueStrings())
+                    writer.write(s);
+                writer.newLine();
 
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        BufferedWriter writer = outputName != null ? Files.newBufferedWriter(Paths.get(outputName)) :
-                new BufferedWriter(new OutputStreamWriter(System.out));
-        stringsMap(stringList);
+            for (int i = 0; i < strings.size(); i++) {
 
-        if (unique) {
-            uniqueStrings(strings, numbers);
+                if (replaced) {
+                    if (numbers.get(i) == 1)
+                        writer.write(strings.get(i));
+                    else
+                        writer.write(numbers.get(i) + " " + strings.get(i));
+                } else
+                    writer.write(strings.get(i));
 
-            for (String s : uniqueStrings(strings, numbers))
-                writer.write(s + "\n");
+                writer.newLine();
 
-        } else for (int i = 0; i < strings.size(); i++) {
-
-            if (replaced) {
-                replacedStrings();
-                writer.write(numbers.get(i) + strings.get(i) + "\n");
-
-            } else
-                writer.write(strings.get(i) + "\n");
+            }
 
         }
 
@@ -71,32 +66,38 @@ public class Uniq {
     }
 
     //Список строк и кол-ва их повторений подряд
-    private void stringsMap(ArrayList<String> str) {
+    private void stringsList(ArrayList<String> str) {
         strings.add(str.get(0));
-        numbers.add("1 ");
+        numbers.add(1);
         int k = 0;
         int num = 1;
+
         for (int i = 0; i < str.size() - 1; i++) {
+
             if (ignoreCase(str.get(i), str.get(i + 1)) == 0) {
+
                 num++;
-                numbers.set(k, num + " ");
+                numbers.set(k, num);
+
             } else {
 
                 strings.add(str.get(i + 1));
                 num = 1;
-                numbers.add("1 ");
+                numbers.add(1);
                 k++;
+
             }
+
         }
     }
 
-
     //-i & -s
     private int ignoreCase(String str1, String str2) {
-
         if (num > 0) {
+
             str1 = str1.length() < num ? "" : str1.substring(num);
             str2 = str2.length() < num ? "" : str2.substring(num);
+
         }
 
         if (ignore)
@@ -105,36 +106,42 @@ public class Uniq {
             return str1.compareTo(str2);
     }
 
-
-    //-r
-    private void replacedStrings() {
-        for (String i : numbers)
-
-            if (i.equals("1 "))
-                numbers.set(numbers.indexOf(i), "");
-    }
-
     //-u
-    private ArrayList<String> uniqueStrings(ArrayList<String> str, ArrayList<String> n) {
+    private ArrayList<String> uniqueStrings() {
         ArrayList<String> uniq = new ArrayList<>();
 
-        for (int i = 0; i < n.size(); i++) {
+        for (int i = 0; i < numbers.size(); i++) {
 
-            if (n.get(i).equals("1 ") && equals(str, str.get(i)) < 2) {
-                uniq.add(str.get(i));
+            /*
+            equals(strings, strings.get(i)) < 2 проверяется, потому что в строке вида:
+             A
+             B
+             A
+             C
+             C
 
+             "A" - не является уникальной, потому что написана два раза.
+             Но они не идут подряд и списки numbers "-" strings выглядит так:
+             1 - A
+             1 - B
+             1 - A
+             2 - C
+
+             Поэтому я и ввел equals()
+             */
+
+            if (numbers.get(i) == 1 && equals(strings.get(i)) < 2) {
+                uniq.add(strings.get(i));
             }
-
         }
-
         return uniq;
     }
 
     //Проверяет, входит ли строка больше одного раза НЕ подряд
-    private int equals(ArrayList<String> strList, String str) {
+    private int equals(String str) {
         int p = 0;
 
-        for (String s : strList)
+        for (String s : strings)
 
             if (s.equals(str))
                 p++;
