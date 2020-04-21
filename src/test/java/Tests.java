@@ -42,13 +42,13 @@ public class Tests {
     }
 
     @Test
-    public void testErrUR() {
+    public void testErrUR() throws IOException {
         String[] args = {"-u", "-r", "-o", "src/test/resources/outputErr.txt", "src/test/resources/testErr.txt"};
         UniqLauncher.main(args);
     }
 
     @Test
-    public void testErrNegativeS() {
+    public void testErrNegativeS() throws IOException {
         String[] args = {"-s", "-3", "-o", "src/test/resources/outputErr.txt", "src/test/resources/testErr.txt"};
         UniqLauncher.main(args);
     }
@@ -62,7 +62,7 @@ public class Tests {
     }
 
     @Test
-    public void testUForRepeat() throws  IOException{
+    public void testUForRepeat() throws IOException {
         String[] args = {"-u", "-o", "src/test/resources/outputRepeat.txt", "src/test/resources/testRepeat.txt"};
         String output = "src/test/resources/outputRepeat.txt";
         UniqLauncher.main(args);
@@ -70,11 +70,18 @@ public class Tests {
     }
 
     @Test
-    public void testRForUnique() throws  IOException{
+    public void testRForUnique() throws IOException {
         String[] args = {"-r", "-o", "src/test/resources/outputUnique.txt", "src/test/resources/testUnique.txt"};
         String output = "src/test/resources/outputUnique.txt";
         UniqLauncher.main(args);
         assertTrue(outputFile(output));
     }
 
+    @Test
+    public void testNothing() throws IOException {
+        String[] args = {"-o", "src/test/resources/outputNothing.txt", "src/test/resources/testNothing.txt"};
+        String output = "src/test/resources/outputNothing.txt";
+        UniqLauncher.main(args);
+        assertTrue(outputFile(output));
+    }
 }
