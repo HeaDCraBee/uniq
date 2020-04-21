@@ -1,4 +1,0 @@
-2 RRsd
-4 EEEEEE
-10 fd
-EEEEEE
