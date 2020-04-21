@@ -27,17 +27,15 @@ public class Uniq {
         this.numbers = numbers;
     }
 
-    public void ret(){
+    public void ret() {
         if (inputStrings.size() != 0)
-        stringsList();
+            stringsList();
     }
 
     //Список строк и кол-ва их повторений подряд
     private void stringsList() {
         strings.add(inputStrings.get(0));
-
         numbers.add(1);
-
         int k = 0;
         int num = 1;
 
@@ -62,7 +60,6 @@ public class Uniq {
     private int ignoreCase(String str1, String str2) {
         if (num > 0) {
             str1 = str1.length() <= num ? "" : str1.substring(num);
-
             str2 = str2.length() <= num ? "" : str2.substring(num);
         }
 
