@@ -32,14 +32,15 @@ public class UniqLauncher {
     private Path inputName;
 
 
+    ArrayList<String> strings = new ArrayList<>();
+    ArrayList<Integer> numbers = new ArrayList<>();
+
+
     public static void main(String[] args) throws IOException {
 
         new UniqLauncher().launch(args);
 
     }
-
-    ArrayList<String> strings = new ArrayList<>();
-    ArrayList<Integer> numbers = new ArrayList<>();
 
     private void launch(String[] args) throws IOException {
         CmdLineParser parser = new CmdLineParser(this);
